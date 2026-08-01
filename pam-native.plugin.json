@@ -1,0 +1,1 @@
+{"$schema":"vendor/pushinbr/pam-native/resources/pam-native.plugin.schema.json","version":1,"protocol":1,"pamNative":{"minimum":"0.6.0","maximumExclusive":"0.7.0"},"php":{"provider":"Pam\\Native\\Sync\\SyncPluginProvider"},"android":{"minSdk":26},"ios":{"minimumVersion":"15.0"},"idl":"pam-native.idl.json","modules":[],"views":[]}

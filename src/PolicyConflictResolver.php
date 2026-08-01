@@ -1,0 +1,4 @@
+<?php
+declare(strict_types=1);namespace Pam\Native\Sync;
+use Closure;use LogicException;use Pam\Native\Sync\Contracts\ConflictResolver;
+final readonly class PolicyConflictResolver implements ConflictResolver{/** @param ?Closure(SyncOperation,RemoteChange):bool $custom */public function __construct(private ConflictPolicy $policy=ConflictPolicy::ServerWins,private ?Closure $custom=null){if($policy===ConflictPolicy::Custom&&$custom===null)throw new LogicException('Custom conflict policy requires a resolver.');}public function applyRemote(?SyncOperation $local,RemoteChange $remote):bool{if($local===null)return true;return match($this->policy){ConflictPolicy::ServerWins=>true,ConflictPolicy::ClientWins=>false,ConflictPolicy::LastWriteWins=>$remote->serverTimestampMillis >= $local->clientTimestampMillis,ConflictPolicy::Custom=>($this->custom)($local,$remote)};}}
