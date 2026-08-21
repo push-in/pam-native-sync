@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+$packageAutoload=dirname(__DIR__).'/vendor/autoload.php';if(is_file($packageAutoload))require$packageAutoload;
 $root=dirname(__DIR__);$core=dirname(__DIR__,2).'/../pam-native/packages/native/src/';$testing=dirname(__DIR__,2).'/pam-native-testing/src/';spl_autoload_register(static function(string$c)use($root,$core,$testing):void{foreach(['Pam\\Native\\Sync\\'=>$root.'/src/','Pam\\Native\\Testing\\'=>$testing,'Pam\\Native\\'=>$core]as$p=>$r)if(str_starts_with($c,$p)){$f=$r.str_replace('\\','/',substr($c,strlen($p))).'.php';if(is_file($f))require$f;return;}});
 use Pam\Native\Sync\ConflictPolicy;use Pam\Native\Sync\Contracts\SyncTransport;use Pam\Native\Sync\PolicyConflictResolver;use Pam\Native\Sync\RemoteChange;use Pam\Native\Sync\Storage\InMemorySyncStore;use Pam\Native\Sync\Storage\SQLiteSyncStore;use Pam\Native\Sync\SyncEngine;use Pam\Native\Sync\SyncOperationKind;use Pam\Native\Sync\SyncPullResult;use Pam\Native\Sync\SyncPushResult;use Pam\Native\Sync\SyncRunState;use Pam\Native\Testing\NativeTestHarness;
 $tests=[];$test=static function(string$n,Closure$f)use(&$tests):void{$tests[$n]=$f;};
