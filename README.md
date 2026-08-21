@@ -2,8 +2,19 @@
 
 An offline-first synchronization engine, not a database wrapper. It adds an idempotent outbox, ordered batches, incremental cursors, tombstones, retry budgets and deterministic conflict policies above PAM Native SQLite and any transport implementation.
 
+## Start here
+
+Install the PAM Runtime and create a PAM Native project before adding Sync:
+
 ```bash
-composer require pushinbr/pam-native-sync
+curl --proto '=https' --proto-redir '=https' --tlsv1.2 \
+    --connect-timeout 15 --max-time 60 --max-filesize 1048576 -fsSL \
+    https://github.com/push-in/pam/releases/latest/download/install.sh | sh
+
+pam init my-app --template native
+cd my-app
+pam composer require pushinbr/pam-native-sync
+pam doctor --fix
 ```
 
 ```php
