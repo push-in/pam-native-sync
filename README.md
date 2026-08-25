@@ -36,6 +36,23 @@ Coordinate local outboxes, incremental pulls, retries, and deterministic conflic
 - Collaborative records and optimistic edits
 - Incremental synchronization of large local datasets
 
+The client is backend-agnostic. Its `HttpSyncTransport` speaks the documented
+JSON protocol and does not install or reference Laravel, PAM HTTP, or any
+server package:
+
+```php
+use Pam\Native\Sync\SyncEngine;
+use Pam\Native\Sync\Transport\HttpSyncTransport;
+
+$transport = new HttpSyncTransport(
+    endpoint: 'https://api.example.com/sync',
+    clientIdentifier: $deviceId,
+    tokenProvider: fn (): ?string => $session->accessToken(),
+);
+
+$engine = new SyncEngine($store, $transport);
+```
+
 ## Quick start
 
 Already have a PAM Native project? Add only this capability:
@@ -62,6 +79,10 @@ $engine->upsert('todos', 'todo-42', ['title' => 'Ship'], 7, fn ($operation) => n
 $engine->synchronize(fn (Pam\Native\Sync\SyncRunReport $report) => null);
 ```
 
-`SyncTransport` is provider-neutral. HTTP, Realtime and Laravel adapters remain separate packages. SQLite writes are prepared and remote changes plus cursor advancement are committed in one native transaction. Server versions are monotonic and stale pulls cannot overwrite newer replicas.
+`SyncTransport` is provider-neutral. The built-in HTTP adapter works with
+Laravel, PAM HTTP, or any other compatible server without adding a backend
+package to the app. SQLite writes are prepared and remote changes plus cursor
+advancement are committed in one native transaction. Server versions are
+monotonic and stale pulls cannot overwrite newer replicas.
 
 Platform support: Android API 26+, iOS 15+, PAM Native 0.8.x.
