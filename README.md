@@ -85,4 +85,24 @@ package to the app. SQLite writes are prepared and remote changes plus cursor
 advancement are committed in one native transaction. Server versions are
 monotonic and stale pulls cannot overwrite newer replicas.
 
+## Local-first CRDTs
+
+For collaboration that must converge before a server answers, the package also
+ships backend-free primitives: `HybridLogicalClock`, `LogicalTimestamp`, and
+`LastWriteWinsMap`. Clocks remain monotonic when wall clocks move backwards;
+map snapshots retain tombstones and merge deterministically across replicas.
+
+```php
+$clock = new Pam\Native\Sync\Crdt\HybridLogicalClock($deviceId);
+$document = new Pam\Native\Sync\Crdt\LastWriteWinsMap();
+$document->assign('title', 'Offline edit', $clock->tick());
+
+// Exchange snapshots through any transport, then merge in either order.
+$remote = Pam\Native\Sync\Crdt\LastWriteWinsMap::restore($payload);
+$document->merge($remote);
+```
+
+CRDTs do not require `pam-native-sync-laravel`, PAM HTTP, or a specific cloud.
+Persistence and transport remain explicit application choices.
+
 Platform support: Android API 26+, iOS 15+, PAM Native 0.8.x.
